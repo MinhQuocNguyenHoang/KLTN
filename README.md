@@ -32,3 +32,18 @@ KLTN/
 ├── server/                        # [Tracked on Git] FOTA Server giả lập (Host PC)
 └── hardware/                      # [Tracked on Git] Sơ đồ nối dây, pinout, schematic, BOM
 ```
+<<<<<<< HEAD
+=======
+
+## Biên dịch lại báo cáo từ LaTeX sang `docs/pdf/`
+
+Chạy từ thư mục gốc `KLTN`:
+
+```powershell
+# Biên dịch toàn bộ báo cáo và tự xuất PDF vào docs/pdf/
+.\docs\latex\tools\build.ps1 -All
+
+# Biên dịch riêng 1 báo cáo
+.\docs\latex\tools\build.ps1 -Name 00_HardwareCompatibility
+```
+>>>>>>> f908d9bbadd8b49e2bebdea307a9e5b6ca0b9dc2
