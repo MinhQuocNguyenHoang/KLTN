@@ -1,0 +1,27 @@
+# Chỉ push docs/pdf/ lên Git -- bỏ qua nguồn LaTeX & file tạm biên dịch
+docs/latex/
+
+# Bỏ qua các file Datasheet/Reference Manual PDF dung lượng lớn (giữ lại README_references.md)
+docs/references/*
+!docs/references/README_references.md
+
+# File tạm LaTeX (phòng trường hợp phát sinh ngoài docs/latex/)
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# Firmware & Embedded Linux build artifacts
+build/
+out/
+*.o
+*.d
+*.elf
+*.bin
+*.hex
+*.map
+.DS_Store
+Thumbs.db
