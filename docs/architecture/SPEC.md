@@ -1,9 +1,9 @@
 # Spec: Automotive Central Gateway & Secure FOTA over CAN-FD — V1
 
 **Thesis:** Nghiên cứu, thiết kế hệ thống Automotive Central Gateway hỗ trợ cập nhật phần mềm an toàn (Secure FOTA) qua mạng CAN-FD ứng dụng trong ô tô  
-**Status:** Draft for approval  
+**Status:** Approved (V1 Baseline)  
 **Last updated:** 2026-11-22  
-**Companion docs:** [CONSTRAINTS.md](../../CONSTRAINTS.md) | [README.md](../../README.md) | [docs/architecture/PLAN.md](PLAN.md) *(to be drafted after Spec approval)*
+**Companion docs:** [CONSTRAINTS.md](../../CONSTRAINTS.md) | [README.md](../../README.md) | [docs/architecture/PLAN.md](PLAN.md)
 
 ---
 
@@ -428,7 +428,7 @@ KLTN/
 └── docs/
     ├── architecture/
     │   ├── SPEC.md                  # This specification (V1)
-    │   └── PLAN.md                  # Implementation plan & tasks (Phase 2)
+    │   └── PLAN.md                  # Implementation plan & task breakdown
     ├── latex/                       # Thesis LaTeX source (ignored by Git)
     ├── pdf/                         # Compiled thesis PDFs
     └── references/                  # Datasheet/RM/UM citations
@@ -537,8 +537,15 @@ fota_status_t boot_meta_commit(const flash_hal_t *flash,
 
 ---
 
-## 13. Open Questions
+## 13. Open Questions (Closed for V1 Planning)
 
-1. **STM32G474VET6 `FDCAN1` Pin Selection:** Which GPIO pair is wired to `MCP2562FD` on your specific `STM32G474VET6` core board — **`PA11`/`PA12` (`AF9`, avoids `BOOT0` on `PB8`)** or **`PD0`/`PD1` (`AF9`)**? *(Note: `PB8` is shared with `BOOT0` per `task001.tex`, so `PA11`/`PA12` or `PD0`/`PD1` is strongly recommended.)*
-2. **STM32G474VET6 External Crystal (HSE) Frequency:** What crystal frequency is populated on your `STM32G474VET6` board (typically `8 MHz` or `24 MHz`)? Needed when configuring the PLL to 170 MHz and exact FDCAN 500 kbps / 2 Mbps bit timings in Phase 2/4.
-3. **Gateway Dev Environment for Buildroot:** Will Buildroot (`gateway/linux/`) be built inside WSL2 / a Linux VM on your host PC? (Host C11 unit tests and the Python FOTA Server run natively on Windows or Linux.)
+All V1 architecture questions are resolved or explicitly gated behind HAL/board-config headers so software development (`Phases 0–3` and `*/core/`) is unblocked:
+
+1. **STM32G474VET6 `FDCAN1` Pin Selection — Deferred to Phase 4 Hardware Bring-Up (`TBD`):**
+   - **Decision:** Confirm the exact wired GPIO pair on the physical `STM32G474VET6` core board during Phase 4 bring-up (**`PA11`/`PA12` (`AF9`)** or **`PD0`/`PD1` (`AF9`)**, strictly avoiding `PB8` which is shared with `BOOT0` per `task001.tex`).
+   - **Isolation:** Centralize pin/AF definitions in `ecu/bootloader/port/board_config.h` (shared with `ecu/app/port/`) so all `shared/` and `*/core/` modules remain 100% hardware-independent. Lock the chosen pair in `hardware/pinout_wiring.md` and update this section before flashing.
+2. **STM32G474VET6 External Crystal (HSE) Frequency — Deferred to Phase 4 Hardware Bring-Up (`TBD`):**
+   - **Decision:** Confirm the crystal marking on the physical `STM32G474VET6` board (typically `8 MHz` or `24 MHz`) at Phase 4 hardware bring-up before finalizing `HSE_VALUE`, PLL (`170 MHz`), and `FDCAN1` bit-timing prescalers (`500 kbps` nominal / `2 Mbps` data).
+   - **Isolation:** Keep `HSE_VALUE` and PLL/FDCAN timing constants exclusively inside `board_config.h` / `ecu/*/port/startup_clock.c`.
+3. **Gateway Dev Environment for Buildroot — Decided: `WSL2 (Ubuntu on Windows)`:**
+   - **Decision:** Buildroot (`gateway/linux/`), ARM Cortex-A7 cross-compilation, and Linux `vcan0` SIL integration run in **WSL2 (Ubuntu on Windows)**. Keep the Buildroot build/output directory on the native WSL2 Linux filesystem (e.g., `~/kltn-buildroot`) to avoid Windows `/mnt/c` I/O overhead and case-sensitivity issues, while storing clean defconfigs, `.dts`, and overlays in `gateway/linux/`. Host C11 unit tests and the Python FastAPI FOTA Server run natively on Windows or WSL2.

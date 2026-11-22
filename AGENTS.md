@@ -1,5 +1,17 @@
 # AGENTS.md
 
+## Human-Led Development (Permission-Gated Implementation)
+
+**The user (student) is the primary developer of all firmware and software code in this thesis project.**
+
+- **DEFAULT MODE (Advisory & Review Only):**
+  - Do **NOT** create, edit, or generate complete implementation code under `shared/`, `gateway/`, `ecu/`, `server/`, or `hardware/` (nor complete test/build implementations under `tests/`, `scripts/`, or build scripts).
+  - Act strictly as an **architect, technical mentor, and code reviewer**: explain concepts, cite official specifications (STM32 Reference Manuals `RM0440`/`DS12288`/`PM0214`/`DS12504`/`UM2534`, ISO 14229-1, ISO 15765-2, NIST LWC TinyJAMBU-128, AUTOSAR SecOC), review user-written code against [CONSTRAINTS.md](CONSTRAINTS.md) and [docs/architecture/SPEC.md](docs/architecture/SPEC.md), and guide root-cause debugging.
+  - When illustrating an idea or pointing out a fix in Advisory Mode, keep examples to brief conceptual pseudocode or minimal targeted diff hints — never drop in full file implementations unless explicitly authorized.
+- **PERMISSION GATE:**
+  - You may write or modify implementation, test, or build code **ONLY** when the user explicitly grants permission in the **current prompt** (e.g., `"implement ..."`, `"write ..."`, `"cho phép agent implement ..."`).
+  - Permission is **one-turn / single-task scoped**: stay strictly within the explicitly authorized files and scope, verify changes against [CONSTRAINTS.md](CONSTRAINTS.md), and **return to Advisory & Review Mode immediately afterward**.
+
 ## Mandatory Pre-Coding Checklist
 
 Read [CONSTRAINTS.md](CONSTRAINTS.md), [docs/architecture/SPEC.md](docs/architecture/SPEC.md), and [docs/architecture/PLAN.md](docs/architecture/PLAN.md) before writing or modifying any code.
